@@ -22,9 +22,11 @@ export class HomePage {
 
   constructor(public navCtrl: NavController, private localNotifications: LocalNotifications, public platform: Platform, public alertCtrl:AlertController, public toast: ToastController, public storage: Storage, private file: File) 
   {
-		
-		this.notifyTime = moment(new Date()).format();
- 
+		let todaydate: any = new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"});
+		//todaydate = moment(new Date()).format();
+		todaydate = moment(todaydate).format();
+		this.notifyTime = todaydate;
+ 		alert(this.notifyTime);	
         this.chosenHours = new Date().getHours();
         this.chosenMinutes = new Date().getMinutes();
  
@@ -57,6 +59,14 @@ export class HomePage {
         
 	
  
+  }
+
+  setDatetime()
+  {
+  let todaydate: any = new Date().toISOString();
+		todaydate = moment(new Date()).format();
+		this.notifyTime = todaydate;
+ 		alert(this.notifyTime);	
   }
 
   checkPath()
@@ -113,8 +123,9 @@ export class HomePage {
  
     addNotifications()
     {
- 
-	    let currentDate = new Date();
+ 		
+ 		let tempdate: any = new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"});
+	    let currentDate = new Date(tempdate);
 	    let currentDay = currentDate.getDay(); // Sunday = 0, Monday = 1, etc.
 	 
 	    for(let day of this.days){

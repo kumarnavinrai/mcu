@@ -37,6 +37,7 @@ export class MyApp {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.
       // Here you can do any higher level native things you might need.
+
       this.autostart.enable();
       this.statusBar.styleDefault();
       this.splashScreen.hide();
@@ -87,7 +88,8 @@ export class MyApp {
     
   }
 
-  showAlert() {
+  showAlert() 
+  {
       this.alert = this.alertCtrl.create({
         title: 'Exit?',
         message: 'Do not exit the app ?',
@@ -112,10 +114,11 @@ export class MyApp {
       {
         this.alert.present();
       }  
-    }
+  }
 
 
-     showToast() {
+  showToast() 
+  {
         let toast = this.toast.create({
           message: 'Press Again to exit',
           duration: 2000,
@@ -127,9 +130,10 @@ export class MyApp {
         });
 
         toast.present();
-      }
+  }
 
-  toastfun(data: string) {
+  toastfun(data: string) 
+  {
       let toast = this.toast.create({
         message: data,
         duration: 10000,
@@ -142,7 +146,7 @@ export class MyApp {
       });
 
       toast.present();
-    }
+  }
 
   openPage(page) {
     // Reset the content nav to have just this page
