@@ -19,6 +19,7 @@ export class HomePage {
   chosenHours: number;
   chosenMinutes: number;
   testtext: string = "Navin";	
+  usersetdatetime: any;
 
   constructor(public navCtrl: NavController, private localNotifications: LocalNotifications, public platform: Platform, public alertCtrl:AlertController, public toast: ToastController, public storage: Storage, private file: File) 
   {
@@ -26,7 +27,11 @@ export class HomePage {
 		//todaydate = moment(new Date()).format();
 		todaydate = moment(todaydate).format();
 		this.notifyTime = todaydate;
- 		alert(this.notifyTime);	
+
+		this.usersetdatetime = todaydate;
+ 		alert(this.usersetdatetime);
+
+
         this.chosenHours = new Date().getHours();
         this.chosenMinutes = new Date().getMinutes();
  
@@ -60,6 +65,239 @@ export class HomePage {
 	
  
   }
+
+  	temp()
+  	{
+
+  		let temp1: any = {action1:"switch1"};
+
+  		this.getKeyName(temp1);
+
+     	if(temp1.hasOwnProperty('action1')){
+     		alert("action1 key exists");
+		}
+
+  		temp1.action2 = "switch2";
+
+  		alert(JSON.stringify(temp1));
+  	}
+
+  	getKeyName(data: any)
+  	{
+  		let keyinitials: any = 'action';
+  		let finalkey: any;
+  		for(var i = 1; i <= 100; i++)
+        {
+        	finalkey = keyinitials + i;
+        	if(data.hasOwnProperty(finalkey)){
+	     		true;
+			}else
+			{
+				break;
+			}
+        }
+
+        return finalkey;
+
+  	} 
+
+  	setAlarm()
+	{
+		let indiatime: any = new Date().toLocaleString("en-US", {timeZone: "Asia/Kolkata"});
+
+		
+		let indiatimedate: any  = new Date(indiatime);
+
+		
+
+		let indiatimeinmiliseconds: any = indiatimedate.getTime();
+
+		
+		
+
+		
+
+		let usersetalarmdate: any  = new Date(this.usersetdatetime);
+
+
+		let usersetalarmdatemiliseconds: any = usersetalarmdate.getTime();
+
+		
+
+		let differencetosetalarmfromnow: any = usersetalarmdatemiliseconds - indiatimeinmiliseconds;
+
+		
+
+		let phonetime:any = new Date();
+
+		
+
+		let phonetimeinmiliseconds: any = phonetime.getTime();
+
+		
+
+		let finaltimetosetalarm: any = phonetimeinmiliseconds + differencetosetalarmfromnow;
+
+		alert("final date set alarm time");
+		alert(new Date(finaltimetosetalarm));
+
+		let idforalarm:any = Math.floor(Math.random() * 20);
+
+		alert(idforalarm); 
+
+		let pointer: any = this;
+
+		//get all notification
+		this.localNotifications.getAll().then((notifications: any) => {
+ 		   
+ 		   alert(JSON.stringify(notifications));
+
+           if(notifications.length > 0)
+           {
+   
+	           alert(notifications[0].at);
+
+	           alert(notifications.length);
+
+	           let notificationset: boolean = false;
+	           let presentnotificationinloop: any;
+	           let presentnotificationdata: any;
+	           let updateddesciption: any;
+	           let differencebetweensetnotificationtimeandnewnotificationtime: any;
+	           let notificationtimestoredinnotification: any;
+	           let milisecondsforstoretimestamp: any;
+	           let datatosort: any;
+	           let internaldatasort: any;
+
+              for(var i = 0; i < notifications.length; i++)
+              {
+              	datatosort = JSON.parse(notifications[i].data);
+              	internaldatasort = datatosort.actions;
+
+              	alert("loop "+i);	
+              	alert(finaltimetosetalarm);
+              	alert(JSON.stringify(datatosort));
+              	alert(JSON.stringify(internaldatasort));
+              	alert(internaldatasort[0].timestamp);
+
+              	notificationtimestoredinnotification = new  Date(internaldatasort[0].timestamp);
+
+              	milisecondsforstoretimestamp = notificationtimestoredinnotification.getTime();
+
+              	differencebetweensetnotificationtimeandnewnotificationtime =  finaltimetosetalarm - milisecondsforstoretimestamp;
+
+              	alert(differencebetweensetnotificationtimeandnewnotificationtime);
+
+			     if(differencebetweensetnotificationtimeandnewnotificationtime < 60000)
+			     {
+			     	alert("update this notification with new data");
+			     	//update this notification with new data
+			     	notificationset = true;
+			     	presentnotificationinloop = notifications[i];
+			     	presentnotificationdata = datatosort;
+			     	if(presentnotificationdata.hasOwnProperty("actions"))
+			     	{	
+			     		presentnotificationdata.actions.push({switch2:"off",timestamp:new Date(finaltimetosetalarm)});	
+			     	}
+
+			     	updateddesciption = notifications[i].text + ' My added description';
+			     	alert(updateddesciption);
+
+			     	pointer.localNotifications.update({
+					   id: notifications[i].id,	
+					   title: 'Motor Switched Off!',	
+					   text: updateddesciption,
+					   sound: 'file:///storage/sdcard0/navin/alarm.mp3',
+					   at: notifications[i].at,
+					   led: 'FF0000',
+					   data: presentnotificationdata
+
+					});
+		 
+			     }
+			  }
+
+			  alert("notificationset");
+			  alert(notificationset);
+			  
+			  if(!notificationset)
+			  {
+			  	alert("set new notification");
+
+			  	//set new notification
+			  	pointer.localNotifications.schedule({
+				   id: idforalarm,	
+				   title: 'Motor Switched Off!',	
+				   text: 'The water motor you switch on has been switched off now.',
+				   sound: 'file:///storage/sdcard0/navin/alarm.mp3',
+				   at: new Date(finaltimetosetalarm),
+				   led: 'FF0000',
+				   data: {actions:[{switch2:"on",timestamp:new Date(finaltimetosetalarm)}]}
+				});
+ 
+
+			  }
+           }
+           else
+           {
+           	
+           	alert("schedule notification new");
+
+           	//schedule notification new
+           	pointer.localNotifications.schedule({
+			   id: idforalarm,	
+			   title: 'Motor Switched Off!',	
+			   text: 'The water motor you switch on has been switched off now.',
+			   sound: 'file:///storage/sdcard0/navin/alarm.mp3',
+			   at: new Date(finaltimetosetalarm),
+			   led: 'FF0000',
+			   data: {actions:[{switch1:"on",timestamp:new Date(finaltimetosetalarm)}]}
+			});
+           }
+ 
+        }); //get all notification ends
+
+      
+			
+
+		
+	}
+
+	
+	getAlarm()
+	{
+
+        this.localNotifications.getAll().then((notifications: any) => {
+ 
+           alert(JSON.stringify(notifications));
+           alert(notifications[0].at);
+
+           /*let notificationset: boolean = false;
+           if(notifications.length > 0)
+           {
+              for(var i = 0; i <= notifications.length; i++)
+              {
+			     if(temp >= notification[i].at + 60000)
+			     {
+			     	//update this notification with new data
+			     	notificationset = true;
+			     }
+			  }
+
+			  if(!notificationset)
+			  {
+			  	//set new notification
+			  }
+           }
+           else
+           {
+           	 //schedule notification new
+           }*/
+ 
+        });
+
+	}		
+
 
   setDatetime()
   {
@@ -120,6 +358,8 @@ export class HomePage {
 	    this.chosenHours = choosendate.getHours();
 	    this.chosenMinutes = choosendate.getMinutes();
 	}
+
+	
  
     addNotifications()
     {
@@ -214,7 +454,7 @@ alert("JSON.stringify(this.notifications)");
 	    this.localNotifications.cancelAll();
 	 
 	    let alert = this.alertCtrl.create({
-	        title: 'Notifications cancelled',
+	        title: 'All Settings cancelled!',
 	        buttons: ['Ok']
 	    });
 	 
