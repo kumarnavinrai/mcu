@@ -1,11 +1,11 @@
 # Basic ionic 2 app
 
-git clone https://github.com/kumarnavinrai/mcu.git
+--git clone https://github.com/kumarnavinrai/mcu.git
 
-npm install
+--npm install
 
-cordova prepare
+--cordova prepare
 
-ionic serve
+--ionic serve
 
-Enjoy!!!
+#Enjoy!!!
